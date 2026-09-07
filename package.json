@@ -1,0 +1,17 @@
+{
+  "name": "ai-pr-reviewer",
+  "version": "0.1.0",
+  "description": "AI-powered GitHub PR review assistant — week 1 scaffold",
+  "main": "server.js",
+  "type": "module",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "dependencies": {
+    "@octokit/app": "^15.1.0",
+    "@octokit/webhooks": "^13.3.0",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2"
+  }
+}

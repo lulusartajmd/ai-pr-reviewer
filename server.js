@@ -1,0 +1,54 @@
+import "dotenv/config.js";
+
+import express from "express";
+import { App } from "@octokit/app";
+import { createNodeMiddleware } from "@octokit/webhooks";
+
+// --- Sanity check env vars before doing anything else ---
+const required = ["GITHUB_APP_ID", "GITHUB_PRIVATE_KEY", "GITHUB_WEBHOOK_SECRET"];
+for (const key of required) {
+  if (!process.env[key]) {
+    console.error(`Missing required env var: ${key}. Copy .env.example to .env and fill it in.`);
+    process.exit(1);
+  }
+}
+
+const app = new App({
+  appId: process.env.GITHUB_APP_ID,
+  privateKey: process.env.GITHUB_PRIVATE_KEY.replace(/\\n/g, "\n"),
+  webhooks: { secret: process.env.GITHUB_WEBHOOK_SECRET },
+});
+
+// --- Week 1 goal: prove the plumbing works end to end ---
+// When a PR opens, comment once so you know GitHub -> your server -> GitHub round-trips.
+app.webhooks.on("pull_request.opened", async ({ octokit, payload }) => {
+  const { number } = payload.pull_request;
+  const { owner, name: repo } = payload.repository;
+  console.log(`PR #${number} opened in ${owner.login}/${repo}`);
+
+  await octokit.rest.issues.createComment({
+    owner: owner.login,
+    repo,
+    issue_number: number,
+    body: "AI PR Reviewer is online. Full review logic coming in week 4.",
+  });
+});
+
+// Just log for now — this is where re-review logic will hook in later (week 4-5).
+app.webhooks.on("pull_request.synchronize", async ({ payload }) => {
+  console.log(`PR #${payload.pull_request.number} updated with new commits`);
+});
+
+app.webhooks.onError((error) => {
+  console.error(`Webhook error: ${error.message}`);
+});
+
+const expressApp = express();
+expressApp.get("/", (_req, res) => res.send("AI PR Reviewer is running."));
+expressApp.use(createNodeMiddleware(app.webhooks, { path: "/webhook" }));
+
+const PORT = process.env.PORT || 3000;
+expressApp.listen(PORT, () => {
+  console.log(`Server listening on port ${PORT}`);
+  console.log(`Webhook endpoint: http://localhost:${PORT}/webhook`);
+});
