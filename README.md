@@ -50,6 +50,8 @@ During local development, Smee forwards GitHub webhook events to my local Node.j
 - [x] Installed the GitHub App on the test repository
 - [x] Connected GitHub webhooks to a local Node.js server
 - [x] Set up Smee for local webhook forwarding
+- [x] Received a real Pull Request webhook event
+- [x] Successfully posted a test comment to the Pull Request
 
 ### Next Steps
 - [ ] Handle Pull Request events
