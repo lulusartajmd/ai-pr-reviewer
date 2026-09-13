@@ -26,7 +26,32 @@ app.webhooks.on("pull_request.opened", async ({ octokit, payload }) => {
   const { owner, name: repo } = payload.repository;
   console.log(`PR #${number} opened in ${owner.login}/${repo}`);
 
-  await octokit.rest.issues.createComment({
+  const { data: files } = await octokit.request(
+    "GET /repos/{owner}/{repo}/pulls/{pull_number}/files",
+    {
+        owner: owner.login,
+        repo,
+        pull_number: number,
+    } 
+  );
+
+  const changes = files.map((file) => ({
+    filename: file.filename,
+    status: file.status,
+    patch: file.patch,
+  }));
+
+  const reviewInput = changes
+    .map(
+      (change) =>
+        `File: ${change.filename}\nStatus: ${change.status}\n\nChanges:\n${change.patch ?? "No patch available."}`
+    )
+    .join("\n\n");
+
+  console.log("Review input:");
+  console.log(reviewInput);
+
+  await octokit.request("POST /repos/{owner}/{repo}/issues/{issue_number}/comments", {
     owner: owner.login,
     repo,
     issue_number: number,
