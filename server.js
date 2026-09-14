@@ -42,9 +42,10 @@ app.webhooks.on("pull_request.opened", async ({ octokit, payload }) => {
   }));
 
   const reviewInput = changes
+    .filter((change) => change.patch)
     .map(
       (change) =>
-        `File: ${change.filename}\nStatus: ${change.status}\n\nChanges:\n${change.patch ?? "No patch available."}`
+        `File: ${change.filename}\nStatus: ${change.status}\n\nChanges:\n${change.patch}`
     )
     .join("\n\n");
 
