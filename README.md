@@ -53,15 +53,24 @@ During local development, Smee forwards GitHub webhook events to my local Node.j
 - [x] Received a real Pull Request webhook event
 - [x] Successfully posted a test comment to the Pull Request
 
+### Week 2 — PR Changes & Repository Context
+- [x] Fetch Pull Request changed files
+- [x] Extract file names, status, and patches
+- [x] Handle changed files with no patch
+- [x] Fetch the repository file tree
+- [x] Fetch contents of changed repository files
+- [x] Decode and store repository file contents
+- [x] Handle multiple changed files dynamically
+- [x] Store repository context for later review
+
 ### Next Steps
-- [ ] Handle Pull Request events
-- [ ] Fetch Pull Request changes
-- [ ] Build repository context
+- [ ] Find relevant repository context beyond changed files
 - [ ] Add embeddings and vector search
 - [ ] Integrate the LLM review engine
 - [ ] Post review comments
 - [ ] Build an evaluation system
 - [ ] Measure review accuracy and performance
+- [ ] Build the React dashboard
 - [ ] Deploy the application
 
 ## Local Development
@@ -102,5 +111,3 @@ For local webhook development, Smee is used to forward GitHub events to the loca
 
 ## Project Status
 This project is currently under active development.
-
-Repository tree test.
