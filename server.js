@@ -35,6 +35,23 @@ app.webhooks.on("pull_request.opened", async ({ octokit, payload }) => {
     } 
   );
 
+  const { data: repoTree } = await octokit.request(
+    "GET /repos/{owner}/{repo}/git/trees/{tree_sha}",
+    {
+      owner: owner.login,
+      repo,
+      tree_sha: payload.pull_request.head.sha,
+      recursive: "true",
+    }
+  );
+
+  console.log("Repository files:");
+  console.log(
+    repoTree.tree
+      .filter((item) => item.type === "blob")
+      .map((item) => item.path)
+  );
+
   const changes = files.map((file) => ({
     filename: file.filename,
     status: file.status,
