@@ -1,4 +1,5 @@
 import "dotenv/config.js";
+import { formatUsername } from "./utils.js";
 
 import express from "express";
 import { App } from "@octokit/app";
@@ -22,6 +23,9 @@ const app = new App({
 // --- Week 1 goal: prove the plumbing works end to end ---
 // When a PR opens, comment once so you know GitHub -> your server -> GitHub round-trips.
 app.webhooks.on("pull_request.opened", async ({ octokit, payload }) => {
+  const username = formatUsername(" TestUser ");
+  console.log("Formatted username:", username);
+  
   const { number } = payload.pull_request;
   const { owner, name: repo } = payload.repository;
   console.log(`PR #${number} opened in ${owner.login}/${repo}`);
